@@ -76,7 +76,8 @@ def showStatistics(predictedClass, confidence):
     1,
     (255, 255, 255),
     2)
-    cv2.imshow("Statistics", textImage)
+
+    return className
 
 def main():
     #index depends on your devices
@@ -93,8 +94,8 @@ def main():
         image, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         binary_image = cv2.Canny(gray, 100, 200)
-        thresh = cv2.threshold(gray, 135, 255, cv2.THRESH_BINARY)[1]
-    
+        thresh = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY)[1]
+        #thresh = gray
         cv2.imwrite('temp_full.png', thresh)
         crp_img = thresh[top:bottom,right:left]
         
@@ -109,15 +110,17 @@ def main():
 
         # prediction, confidence = getPrediction()
         prediction, confidence = get_prediction(resized_img)
-        showStatistics(prediction, confidence)
-        cv2.imshow("After processing", 'temp.png')
+        tf.print(prediction)
+        pred_str = showStatistics(prediction, confidence)
+        #cv2.imshow("After processing", 'temp.png')
         
         cv2.rectangle(frame, (right,top), (left,bottom), (255, 255, 255), 2)
+        cv2.putText(frame, str(pred_str), (right, bottom), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_4)
         cv2.imshow("image",frame)
         
         if (cv2.waitKey(1) & 0xFF == ord('q')): break
         i+=1
-        if (i>50): break
+        #if (i>50): break
             
     cap.release()
     #cv2.destroyAllWindows()
