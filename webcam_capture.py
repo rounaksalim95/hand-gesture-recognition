@@ -9,7 +9,7 @@ if result:
     cv2.imshow("test", image)
 
     # Save image in local storage
-    # cv2.imwrite("test.png", image)
+    cv2.imwrite("test.png", image)
 
     # Press key to destroy window
     cv2.waitKey(0)
