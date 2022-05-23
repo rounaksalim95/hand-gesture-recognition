@@ -15,12 +15,12 @@ def main():
     top, right, bottom, left = 10, 350, 260, 600
     
     i=0 #number of images
-    
+    j = 0
     while cap.isOpened() :
 
         if i < 20 :
             continue
-        
+
         image, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         binary_image = cv2.Canny(gray, 100, 200)
@@ -33,7 +33,8 @@ def main():
         cv2.imshow("image",frame)        
         
         if i%5 == 0:
-            cv2.imwrite(f'thumbs_up/{i}.png', resized_img)
+            cv2.imwrite(f'thumbs_up/{j}.png', resized_img)
+            j += 1
         
         if (cv2.waitKey(1) & 0xFF == ord('q')): break
 
