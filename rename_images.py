@@ -29,9 +29,14 @@ def main(argv):
         if file.endswith(".png"):
             images.append(file)
 
-    # Rename images
+    # # Rename images
+    # for i in range(len(images)):
+    #     os.rename(f"{directory}/{images[i]}", f"{directory}/{i + 1}.png")
+
+    new_directory = f"{directory}/new"
+    # Copy images to new directory with new names
     for i in range(len(images)):
-        os.rename(f"{directory}/{images[i]}", f"{directory}/{i + 1}.png")
+        os.system(f"cp {directory}/{images[i]} {new_directory}/{i + 1}.png")
 
 if __name__ == '__main__':
     app.run(main)
