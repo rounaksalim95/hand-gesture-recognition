@@ -1,20 +1,18 @@
-import numpy as np
-from tensorflow import keras
-from sklearn.metrics import classification_report
-
-# Imports
+import os
+import time
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import PIL
 import tensorflow as tf
-import time
-
+from sklearn.metrics import classification_report
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
+
+# Imports
+
 
 # model = keras.models.load_model("./FinalModel/GestureRecognitionModel.tfl")
 model = keras.models.load_model("./FinalModel/GestureRecognitionModelBig.tfl")
@@ -70,7 +68,7 @@ test_images = []
 # image = cv2.imread(f"./webcam-images/7.png")
 image = cv2.imread(f"./victory-sign/50.png")
 # image = cv2.imread(f"./hand-gesture-dataset-copy/test/test/ok-sign/910.jpg")
-image = cv2.resize(image, (50,50), interpolation = cv2.INTER_AREA)
+image = cv2.resize(image, (50, 50), interpolation=cv2.INTER_AREA)
 bw_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 test_images.append(bw_image.reshape(50, 50, 1))
 
