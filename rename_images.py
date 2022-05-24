@@ -29,9 +29,13 @@ def main(argv):
         if file.endswith(".png"):
             images.append(file)
 
-    # # Rename images
-    # for i in range(len(images)):
-    #     os.rename(f"{directory}/{images[i]}", f"{directory}/{i + 1}.png")
+    # Remove whitespace from filenames
+    for i in range(len(images)):
+        original_image = images[i]
+        images[i] = images[i].replace(' ', '')
+        images[i] = images[i].replace("(", "_")
+        images[i] = images[i].replace(")", "")
+        os.rename(f"{directory}/{original_image}", f"{directory}/{images[i]}")
 
     new_directory = f"{directory}/new"
     # Copy images to new directory with new names
