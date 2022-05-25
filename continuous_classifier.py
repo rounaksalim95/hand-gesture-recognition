@@ -1,19 +1,12 @@
-import os
-
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
-import PIL
 import tensorflow as tf
-from matplotlib import pyplot as plt
+
+from absl import app, logging
 from PIL import Image
-from sklearn.metrics import classification_report
 from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.models import Sequential
 
-# Imports
-
+CONFIDENCE_THRESHOLD = 0.99
 
 # model = keras.models.load_model("./FinalModel/GestureRecognitionModel.tfl")
 model = keras.models.load_model("./FinalModel/CustomDataGestureRecognitionModelBig.tfl")
@@ -48,50 +41,33 @@ def get_prediction(image):
     # img = cv2.imread('temp.png')
     # bw_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     prediction = model.predict(np.array([image.reshape(50, 50, 1)]))
-    return np.argmax(prediction), (
-        np.amax(prediction) / (prediction[0][0] + prediction[0][1] + prediction[0][2])
-    )
+    
+    score = tf.nn.softmax(prediction)
+    pred = np.argmax(score)
+    confidence = np.amax(score)
+
+    # Get the prediction class
+    prediction_class = ""
+    if pred == 0:
+        prediction_class = "OK sign"
+    elif pred == 1:
+        prediction_class = "L sign"
+    elif pred == 2:
+        prediction_class = "Victory sign"
+    elif pred == 3:
+        prediction_class = "Fingers crossed"
+    elif pred == 4:
+        prediction_class = "Thumbs up"
+
+    logging.info(f"Predicted {prediction_class} with confidence {confidence * 100}%")
+
+    if confidence < CONFIDENCE_THRESHOLD:
+        return "", confidence
+
+    return prediction_class, confidence
 
 
-def showStatistics(predictedClass, confidence):
-    textImage = np.zeros((300, 512, 3), np.uint8)
-    className = ""
-
-    if predictedClass == 0:
-        className = "OK sign"
-    elif predictedClass == 1:
-        className = "L sign"
-    elif predictedClass == 2:
-        className = "Victory sign"
-    elif predictedClass == 3:
-        className = "Fingers crossed"
-    elif predictedClass == 4:
-        className = "Thumbs up"
-
-    cv2.putText(
-        textImage,
-        "Pedicted Class : " + className,
-        (30, 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1,
-        (255, 255, 255),
-        2,
-    )
-
-    cv2.putText(
-        textImage,
-        "Confidence : " + str(confidence * 100) + "%",
-        (30, 100),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1,
-        (255, 255, 255),
-        2,
-    )
-
-    return className
-
-
-def main():
+def main(argv):
     # index depends on your devices
     cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture(1)
@@ -101,12 +77,9 @@ def main():
     # top, right, bottom, left = 10, 350, 260, 600
     top, right, bottom, left = 10, 900, 260, 1200
 
-    i = 0  # number of images
-
     while cap.isOpened():
         image, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        binary_image = cv2.Canny(gray, 100, 200)
         thresh = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY)[1]
         # thresh = gray
         cv2.imwrite("temp_full.png", thresh)
@@ -123,31 +96,29 @@ def main():
 
         # prediction, confidence = getPrediction()
         prediction, confidence = get_prediction(resized_img)
-        tf.print(prediction)
-        pred_str = showStatistics(prediction, confidence)
         # cv2.imshow("After processing", 'temp.png')
 
+        if prediction:
+            cv2.putText(
+                frame,
+                "Pedicted Class : " + prediction + " Confidence : " + str(confidence * 100) + "%",
+                (right, bottom),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255, 255, 255),
+                2,
+                cv2.LINE_4,
+            )
+
         cv2.rectangle(frame, (right, top), (left, bottom), (255, 255, 255), 2)
-        cv2.putText(
-            frame,
-            str(pred_str),
-            (right, bottom),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (255, 255, 255),
-            2,
-            cv2.LINE_4,
-        )
         cv2.imshow("image", frame)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
-        i += 1
-        # if (i>50): break
 
     cap.release()
     # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    main()
+    app.run(main)
