@@ -1,7 +1,11 @@
 # hand-gesture-recognition
 
-CMPE-255 Final Project
+This is a system to perform real-time hand gesture recognition using just the computer's webcam and CPU.
 
-## References
+Run `python3 continuous_classifier.py` to run the system that will recognize hand gestures in real-time.
 
-- [Capture images from webcam](https://www.geeksforgeeks.org/how-to-capture-a-image-from-webcam-in-python/)
+Note: Requirements can be installed using `pip3 install -r requirements.txt`.
+
+## Demo
+
+![Demo](./demo.gif)
