@@ -75,7 +75,8 @@ def main(argv):
     # define frame corners
     # top, right, bottom, left = 10, 350, 225, 590
     # top, right, bottom, left = 10, 350, 260, 600
-    top, right, bottom, left = 10, 900, 260, 1200
+    # top, right, bottom, left = 10, 900, 260, 1200
+    top, right, bottom, left = 10, 100, 260, 400
 
     while cap.isOpened():
         image, frame = cap.read()
@@ -101,7 +102,7 @@ def main(argv):
         if prediction:
             cv2.putText(
                 frame,
-                "Pedicted Class : " + prediction + "\nConfidence : " + str(confidence * 100) + "%",
+                prediction + "Confidence : " + str(confidence * 100) + "%",
                 (right, bottom),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
