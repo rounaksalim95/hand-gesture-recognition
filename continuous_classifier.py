@@ -101,7 +101,7 @@ def main(argv):
         if prediction:
             cv2.putText(
                 frame,
-                "Pedicted Class : " + prediction + " Confidence : " + str(confidence * 100) + "%",
+                "Pedicted Class : " + prediction + "\nConfidence : " + str(confidence * 100) + "%",
                 (right, bottom),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
